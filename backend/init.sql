@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS todos (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  completed BOOLEAN DEFAULT false,
+  color TEXT DEFAULT 'yellow',
+  style TEXT DEFAULT 'plain',
+  status TEXT DEFAULT 'empty',
+  tasks TEXT DEFAULT '[]',
+  x INTEGER DEFAULT 100,
+  y INTEGER DEFAULT 100,
+  width INTEGER DEFAULT 160,
+  height INTEGER DEFAULT 160,
+  created_at TIMESTAMP DEFAULT NOW()
+);

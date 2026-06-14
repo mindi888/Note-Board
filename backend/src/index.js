@@ -2,8 +2,10 @@ const express = require('express');
 const pool = require('./db');
 const todosRouter = require('./routes/todos');
 require('dotenv').config();
+const cors = require('cors')
 
 const app = express();
+app.use(cors())
 app.use(express.json());
 app.use('/todos', todosRouter);
 
