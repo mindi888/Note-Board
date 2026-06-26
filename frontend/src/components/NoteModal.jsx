@@ -1,4 +1,6 @@
 import { useState } from "react"
+import trashIcon from "../assets/Trash.svg"
+import calendarIcon from "../assets/Calendar.svg"
 
 function NoteModal({ onClose, onCreate, initialNote }) {
   const [title, setTitle] = useState(initialNote?.title || "")
@@ -17,10 +19,14 @@ function NoteModal({ onClose, onCreate, initialNote }) {
   }
 
   function updateTask(index, text) {
-    const updated = [...tasks]
+    let updated = [...tasks] //changed to let to allow reassignment
     updated[index].text = text
     if (index === tasks.length - 1 && text.length > 0) {
       updated.push({ text: "", completed: false })
+    }
+    // If a middle input is emptied, remove from list
+    if (text.length === 0 && index !== updated.length - 1 && updated.length > 1) {
+      updated = updated.filter((_, i) => i !== index);
     }
     setTasks(updated)
   }
@@ -50,10 +56,67 @@ function NoteModal({ onClose, onCreate, initialNote }) {
     onClose()
   }
 
+  function handleEnterKey(currentIndex, currentElement) {
+  if (tasks[currentIndex].text.trim().length === 0) return;
+  // 1. Create a copy of your tasks list
+  const updated = [...tasks];
+
+  // 2. Splice a brand new blank task directly below the current line index
+  updated.splice(currentIndex + 1, 0, { text: "", completed: false });
+
+  // 3. Save the new array arrangement to React state
+  setTasks(updated);
+
+  // 4. Wait 10 milliseconds for React to draw the new element, then snap cursor focus to it
+  setTimeout(() => {
+    const allTextareas = currentElement.closest('.modal-tasks')?.querySelectorAll('.task-textarea');
+    if (allTextareas && allTextareas[currentIndex + 1]) {
+      allTextareas[currentIndex + 1].focus();
+    }
+  }, 10);
+}
+
+function hasChangesBeenMade() {
+  const originalTitle = initialNote?.title || "";
+  if (title.trim() !== originalTitle.trim()) return true;
+
+  // 2. Parse and clean your original tasks array structure
+  let originalTasks = initialNote?.tasks || [];
+  if (typeof originalTasks === "string") {
+    try { originalTasks = JSON.parse(originalTasks); } catch { originalTasks = []; }
+  }
+  const cleanOriginal = originalTasks.filter(t => t.text.trim().length > 0);
+
+  // 3. Clean and isolate your live current user input tasks
+  const cleanCurrent = tasks.filter(t => t.text.trim().length > 0);
+
+  // 4. If the number of tasks changed, edits definitely happened
+  if (cleanCurrent.length !== cleanOriginal.length) return true;
+
+  // 5. Compare the exact text content and completion status of each row item
+  for (let i = 0; i < cleanCurrent.length; i++) {
+    if (cleanCurrent[i].text.trim() !== cleanOriginal[i].text.trim()) return true;
+    if (cleanCurrent[i].completed !== cleanOriginal[i].completed) return true;
+  }
+
+  // No modifications detected
+  return false;
+}
+
+function handleBackdropClick() {
+  if (hasChangesBeenMade()) {
+    const confirmDiscard = window.confirm("You have unsaved changes! Are you sure you want to leave without saving?");
+    if (!confirmDiscard) return; 
+  }
+  
+  onClose();
+}
+
+
   const { bg, border } = colors[color]
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleBackdropClick}>
       <div className="modal" onClick={e => e.stopPropagation()}>
 
         {/* LEFT — Color */}
@@ -111,6 +174,13 @@ function NoteModal({ onClose, onCreate, initialNote }) {
                       e.target.style.height = "auto";
                       e.target.style.height = e.target.scrollHeight + "px";
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key == "Enter") {
+                        e.preventDefault();
+                        handleEnterKey(i, e.target);
+                        
+                      }
+                    }}
                     style={{ 
                       textDecoration: task.completed ? "line-through" : "none", 
                       opacity: task.completed ? 0.5 : 1
@@ -123,11 +193,10 @@ function NoteModal({ onClose, onCreate, initialNote }) {
                       title="Delete task"
                       onClick={() => deleteTask(i)}
                       >
-                        ❌
+                        <img src={trashIcon} alt="Delete task" />
                       </button>
                   )}
 
-                  {/* ADD THE GOOGLE CALENDAR BUTTON DIRECTLY TO THE RIGHT OF THE DELETE BUTTON */}
                   {task.text.trim().length > 0 && !task.completed && (
                     <button
                       className="modal-cal-btn"
@@ -141,7 +210,12 @@ function NoteModal({ onClose, onCreate, initialNote }) {
                         window.open(calendarUrl, '_blank')
                       }}
                     >
-                      📅
+                      <img src={calendarIcon} alt="Add to Calendar" />
+    
+                      {/* DYNAMIC CALENDAR DATE */}
+                      <span className="calendar-date-text">
+                        {new Date().getDate()}
+                      </span>
                     </button>
                   )}
                 </div>

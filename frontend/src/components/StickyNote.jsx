@@ -104,10 +104,6 @@ function StickyNote({ note, onUpdate, onClick, boardRef, onDragOffBoard }) {
       width: startW + e.clientX - startX, 
       height: startH + e.clientY - startY 
     })
-      // onUpdate({
-      //   width: Math.max(160, Math.min(320, startW + e.clientX - startX)),
-      //   height: Math.max(160, Math.min(320, startH + e.clientY - startY))
-      // })
     }
 
     function onUp() {
@@ -174,7 +170,6 @@ function StickyNote({ note, onUpdate, onClick, boardRef, onDragOffBoard }) {
       
       <div className="resize-handle" onMouseDown={handleResizeDown} />
 
-      {/* FIXED: Replaced raw encoded string text with clean emoji spacing */}
       {offBoard && (
         <div className="note-trash-overlay">🗑️</div>
       )}

@@ -419,36 +419,59 @@ html, body, #root {
   margin-bottom: 6px;
 }
 
-/* Base style for the modal delete button to maintain dimensions */
-.task-trash {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #ff5c5c;
-  font-size: 14px;
-  padding: 4px;
-  flex-shrink: 0;
-  transition: transform 0.1s ease-in-out;
-}
-
-.task-trash:hover {
-  transform: scale(1.15);
-}
-
-/* Style for the calendar button right next to it */
+.task-trash,
 .modal-cal-btn {
   background: transparent;
   border: none;
-  cursor: pointer;
-  font-size: 14px;
   padding: 4px;
-  flex-shrink: 0;
-  transition: transform 0.1s ease-in-out;
+  cursor: pointer;
+  opacity: 0.6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* Essential for locking the absolute date text container */
+  transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
-.modal-cal-btn:hover {
-  transform: scale(1.15);
+.task-trash img,
+.modal-cal-btn img {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
+
+.calendar-date-text {
+  position: absolute;
+  top: 62%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 7.5px;
+  font-weight: bold;
+  font-family: 'Jua', sans-serif;
+  pointer-events: none; /* Prevents text from interfering with clicking the button */
+  user-select: none;
+  opacity: 0.9; 
+  transition: color 0.2s ease;
+}
+
+/* Brings the button to full brightness when hovered */
+.task-trash:hover,
+.modal-cal-btn:hover {
+  opacity: 1;
+}
+
+/* Applies a matrix color filter to make the underlying SVG image lines turn Red on hover */
+.task-trash:hover img,
+.modal-cal-btn:hover img {
+  filter: invert(31%) sepia(87%) saturate(4645%) hue-rotate(341deg) brightness(97%) contrast(93%);
+  scale: 1.1;
+}
+
+/* Automatically changes the nested date text to match the red hover lines */
+.modal-cal-btn:hover .calendar-date-text {
+  color: #ef4444;
+}
+
 
 .modal-done {
   padding: 12px 48px;
