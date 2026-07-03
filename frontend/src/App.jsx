@@ -2,12 +2,19 @@ import { useState, useEffect, useRef } from "react"
 import './App.css'
 import cat from "./assets/cat.svg"
 import shelf from "./assets/shelf.svg"
-import toto from "./assets/toto.svg"
+import toto from "./assets/Toto.svg"
 import plant from "./assets/plant.svg"
 import pencilHolder from "./assets/pencil-holder.svg"
 import noteStack from "./assets/note-stack.svg"
 import NoteModal from "./components/NoteModal"
 import StickyNote from "./components/StickyNote.jsx"
+
+// Generate a unique tracking token for the user if one doesn't exist
+let trackingToken = localStorage.getItem("bulletin_board_user_token");
+if (!trackingToken) {
+  trackingToken = "anon_" + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+  localStorage.setItem("bulletin_board_user_token", trackingToken);
+}
 
 function App() {
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
@@ -20,12 +27,18 @@ function App() {
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
   const [draggingOffBoard] = useState(false)
 
+  const fetchHeaders = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-User-Tracking-Token": trackingToken
+  }
+
   useEffect(() => {
-    fetch(API_BASE_URL + "/todos")
+    fetch(API_BASE_URL + "/todos", {headers: fetchHeaders})
       .then(res => res.json())
       .then(data => setNotes(data))
       .catch(err => console.error("Failed to fetch todos:", err))
-  }, [])
+  }, [API_BASE_URL])
 
   // Track cursor for pending note
   useEffect(() => {
@@ -67,21 +80,16 @@ async function placePendingNote(e) {
     const x = e.clientX - rect.left - 80;
     const y = e.clientY - rect.top - 80;
 
-    // 2. Convert pixels to exact percentage coordinates (0 - 100)
     const xPct = Math.max(0, Math.min(100, (x / rect.width) * 100))
     const yPct = Math.max(0, Math.min(100, (y / rect.height) * 100))
     
-    // Default size: notes take up roughly 15% of the board's width/height
     const widthPct = 15 
     const heightPct = 15
 
     try {
       const res = await fetch(API_BASE_URL + "/todos", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
+        headers: fetchHeaders,
         body: JSON.stringify({
           title: pendingNote.title,
           color: pendingNote.color,
@@ -112,7 +120,7 @@ async function placePendingNote(e) {
     if (!board) return
     const rect = board.getBoundingClientRect()
 
-    // Convert raw incoming drag/resize pixel updates into percentages on the fly
+    // Convert raw incoming drag/resize pixel updates into percentages
     const pctUpdates = { ...updates }
     if (updates.x !== undefined) pctUpdates.x = (updates.x / rect.width) * 100
     if (updates.y !== undefined) pctUpdates.y = (updates.y / rect.height) * 100
@@ -125,7 +133,7 @@ async function placePendingNote(e) {
     try {
       await fetch(`${API_BASE_URL}/todos/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: fetchHeaders,
         body: JSON.stringify(pctUpdates)
       })
     } catch (err) {
@@ -138,7 +146,10 @@ async function placePendingNote(e) {
     setTimeout(async () => {
       setNotes(prev => prev.filter(n => n.id !== id))
       try {
-        await fetch(`${API_BASE_URL}/todos/${id}`, { method: "DELETE" })
+        await fetch(`${API_BASE_URL}/todos/${id}`, { 
+          method: "DELETE",
+          headers: fetchHeaders
+        })
       } catch (err) {
         console.error("Failed to delete note:", err)
       }
@@ -162,24 +173,20 @@ async function placePendingNote(e) {
       onClick={pendingNote ? placePendingNote : undefined}
     >
       {/* Bulletin board */}
-      <div
-        className="bulletin-board"
-        ref={boardRef}
-      >
-        {notes.map(note => (
-          <StickyNote
-            key={note.id}
-            note={note}
-            boardRef={boardRef}
-            onUpdate={(updates) => handleUpdateNote(note.id, updates)}
-            onDelete={() => handleDeleteNote(note.id)}
-            onClick={() => {
-              if (!pendingNote) setEditingNote(note)
-            }}
-            onDragOffBoard={() => handleDeleteNote(note.id)}
-          />
-        ))}
-      </div>
+      <div className="bulletin-board" ref={boardRef}>
+      {/* The Array.isArray check acts as a shield to prevent the crash */}
+      {Array.isArray(notes) && notes.map(note => (
+        <StickyNote 
+          key={note.id} 
+          note={note} 
+          boardRef={boardRef} 
+          onUpdate={(updates) => handleUpdateNote(note.id, updates)} 
+          onDelete={() => handleDeleteNote(note.id)} 
+          onClick={() => { if (!pendingNote) setEditingNote(note) }} 
+          onDragOffBoard={() => handleDeleteNote(note.id)} 
+        />
+      ))}
+    </div>
 
       {/* Pending note follows cursor */}
       {pendingNote && (

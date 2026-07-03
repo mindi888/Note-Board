@@ -5,11 +5,23 @@ const pool = require('../db');
 
 router.use(cors());
 
+// Helper function to make sure the token exists in the incoming request headers
+function getTrackingToken(req, res) {
+  const token = req.headers['x-user-tracking-token'];
+  if (!token) {
+    res.status(400).json({ error: "Missing identity tracking token header." });
+    return null;
+  }
+  return token;
+}
+
 // 1. GET ALL NOTES
 router.get('/', async (req, res) => {
+const token = getTrackingToken(req, res);
+if (!token) return; 
+
   try {
-    // Sort by id so sticky notes stay in the same order on screen layout refresh
-    const result = await pool.query('SELECT * FROM todos ORDER BY id ASC');
+    const result = await pool.query('SELECT * FROM todos WHERE user_id = $1 ORDER BY id ASC', [token]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -18,20 +30,24 @@ router.get('/', async (req, res) => {
 
 // 2. POST A NEW NOTE (Captures all your NoteModal settings)
 router.post('/', async (req, res) => {
+  const token = getTrackingToken(req, res);
+  if (!token) return;
+
   const { title, color, status, tasks, x, y, width, height } = req.body;
   try {
     const result = await pool.query(
-      `INSERT INTO todos (title, color, status, tasks, x, y, width, height) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      `INSERT INTO todos (title, color, status, tasks, x, y, width, height, user_id) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
       [
         title || 'Untitled',
         color || 'yellow',
         status || 'empty',
         JSON.stringify(tasks || []),
-        x !== undefined && x !== null ? x : 150, // 👈 Safe fallback for 0, prevents database crash
-        y !== undefined && y !== null ? y : 100, // 👈 Safe fallback for 0, prevents database crash
+        x !== undefined && x !== null ? x : 150, 
+        y !== undefined && y !== null ? y : 100, 
         width || 160,
-        height || 160
+        height || 160,
+        token
       ]
     );
     res.status(201).json(result.rows[0]);
@@ -43,6 +59,9 @@ router.post('/', async (req, res) => {
 
 // 3. PUT (Update layout coordinates during drag or resize)
 router.put('/:id', async (req, res) => {
+  const token = getTrackingToken(req, res);
+  if (!token) return;
+
   const { id } = req.params;
   const body = req.body || {};
   const { title, color, status, tasks, x, y, width, height } = body;
@@ -58,18 +77,19 @@ router.put('/:id', async (req, res) => {
            y = COALESCE($6, y), 
            width = COALESCE($7, width), 
            height = COALESCE($8, height) 
-       WHERE id = $9 
+       WHERE id = $9 AND user_id = $10
        RETURNING *`,
       [
         title !== undefined ? title : null,
         color !== undefined ? color : null,
         status !== undefined ? status : null,
-        tasks !== undefined ? JSON.stringify(tasks) : null, // 👈 Fixes the stringify undefined crash!
-        x !== undefined ? parseFloat(x) : null,             // 👈 Safely reads responsive decimals
+        tasks !== undefined ? JSON.stringify(tasks) : null, 
+        x !== undefined ? parseFloat(x) : null,             
         y !== undefined ? parseFloat(y) : null,
         width !== undefined ? parseFloat(width) : null,
         height !== undefined ? parseFloat(height) : null,
-        id
+        id,
+        token
       ]
     );
 
@@ -88,9 +108,16 @@ router.put('/:id', async (req, res) => {
 
 // 4. DELETE A NOTE
 router.delete('/:id', async (req, res) => {
+  const token = getTrackingToken(req, res);
+  if (!token) return;
+
   const { id } = req.params;
   try {
-    await pool.query('DELETE FROM todos WHERE id = $1', [id]);
+    const result = await pool.query('DELETE FROM todos WHERE id = $1 AND user_id = $2', [id, token]);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Sticky note not found or access denied" });
+    }
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: err.message });
