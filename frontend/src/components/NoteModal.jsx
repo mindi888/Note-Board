@@ -213,9 +213,10 @@ function handleBackdropClick() {
                       <img src={calendarIcon} alt="Add to Calendar" />
     
                       {/* DYNAMIC CALENDAR DATE */}
-                      <span className="calendar-date-text">
-                        {new Date().getDate()}
-                      </span>
+                      <span
+                        className="calendar-date-text"
+                        data-date={new Date().getDate()}
+                      />
                     </button>
                   )}
                 </div>

@@ -643,12 +643,10 @@ _____________________________________________ */
     top: 63%; 
     left: 50%;
     transform: translate(-50%, -50%);
-    font-weight: bold;
-    font-family: 'Jua', sans-serif;
-    pointer-events: none; /* Prevents text from interfering with clicking the button */
-    user-select: none;
-    opacity: 0.9;
-    text-decoration: none !important;
+  }
+
+  .calendar-date-text::before {
+    content: attr(data-date);
   }
 
   .modal-done {
@@ -677,6 +675,9 @@ _____________________________________________ */
   }
   .toto {
     transform: translateX(70%) translateY(12%)scale(0.60);
+  }
+  .note-stack {
+    transform: translateX(-50%) translateY(-10%)
   }
 }
 
