@@ -640,7 +640,7 @@ html, body, #root {
 
   .calendar-date-text {
     font-size: 6.5px;
-    top: 66%; 
+    top: 65%; 
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: bold;
@@ -648,6 +648,14 @@ html, body, #root {
     pointer-events: none; /* Prevents text from interfering with clicking the button */
     user-select: none;
   }
+
+    /* Override iOS Safari's auto-injected data-detector link styling */
+    .calendar-date-text a[x-apple-data-detectors],
+    a[x-apple-data-detectors] {
+      color: inherit !important;
+      text-decoration: none !important;
+      font: inherit !important;
+    }
 
   .modal-done {
     padding: 10px 36px;
