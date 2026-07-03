@@ -26,7 +26,6 @@ function App() {
   const [editingNote, setEditingNote] = useState(null) // note being edited
   const [pendingNote, setPendingNote] = useState(null) // note following cursor
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
-  const [draggingOffBoard] = useState(false)
 
   const fetchHeaders = {
     "Content-Type": "application/json",
@@ -60,8 +59,8 @@ function App() {
   // Clean the note data IMMEDIATELY before attaching it to the cursor
   const cleanNote = {
     title: newNote.title || "Untitled",
-    color: newNote.color || "yellow", // Guarantee color is never undefined
-    tasks: Array.isArray(newNote.tasks) ? newNote.tasks : [], // Guarantee tasks is a real array
+    color: newNote.color || "yellow", 
+    tasks: Array.isArray(newNote.tasks) ? newNote.tasks : [],
   };
 
   setPendingNote(cleanNote);
@@ -121,14 +120,12 @@ async function placePendingNote(e) {
     if (!board) return
     const rect = board.getBoundingClientRect()
 
-    // Convert raw incoming drag/resize pixel updates into percentages
     const pctUpdates = { ...updates }
     if (updates.x !== undefined) pctUpdates.x = (updates.x / rect.width) * 100
     if (updates.y !== undefined) pctUpdates.y = (updates.y / rect.height) * 100
     if (updates.width !== undefined) pctUpdates.width = (updates.width / rect.width) * 100
     if (updates.height !== undefined) pctUpdates.height = (updates.height / rect.height) * 100
 
-    // Update local state optimistically using percentages
     setNotes(prev => prev.map(n => n.id === id ? { ...n, ...pctUpdates } : n))
 
     try {
@@ -173,6 +170,21 @@ async function placePendingNote(e) {
       className="app"
       onClick={pendingNote ? placePendingNote : undefined}
     >
+
+      <div className="desk">
+        <img src={shelf} className="deco shelf" alt="" />
+        <img src={pencilHolder} className="deco pencil-holder" alt="" />
+        <img src={plant} className="deco plant" alt="" />
+        <img src={toto} className="deco toto" alt="" />
+        <img src={cat} className="deco cat" alt="" />
+        <img
+          src={noteStack}
+          className="deco note-stack"
+          alt=""
+          onClick={e => { e.stopPropagation(); setShowModal(true) }}
+        />
+      </div>
+
       {/* Bulletin board */}
       <div className="bulletin-board" ref={boardRef}>
       {/* The Array.isArray check acts as a shield to prevent the crash */}
@@ -209,25 +221,6 @@ async function placePendingNote(e) {
           <div className="sticky-title">{pendingNote.title || "Untitled"}</div>
         </div>
       )}
-
-      {/* Trash indicator when dragging off board */}
-      {draggingOffBoard && (
-        <div className="trash-indicator">🗑️</div>
-      )}
-
-      <div className="desk">
-        <img src={shelf} className="deco shelf" alt="" />
-        <img src={pencilHolder} className="deco pencil-holder" alt="" />
-        <img src={plant} className="deco plant" alt="" />
-        <img src={toto} className="deco toto" alt="" />
-        <img src={cat} className="deco cat" alt="" />
-        <img
-          src={noteStack}
-          className="deco note-stack"
-          alt=""
-          onClick={e => { e.stopPropagation(); setShowModal(true) }}
-        />
-      </div>
 
       {showModal && (
         <NoteModal

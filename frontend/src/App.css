@@ -25,7 +25,7 @@ html, body, #root {
 }
 
 /* ─────────────────────────────────────────
-   WALL AREA (sticky notes live here)
+   WALL AREA 
 ───────────────────────────────────────── */
 .wall-area {
   position: absolute;
@@ -147,7 +147,7 @@ html, body, #root {
 }
 
 /* ─────────────────────────────────────────
-   STICKY NOTE ON WALL
+   STICKY NOTE ON BOARD
 ───────────────────────────────────────── */
 .sticky-note {
   border-radius: 10px;
@@ -381,7 +381,6 @@ html, body, #root {
   margin-bottom: 6px;
 }
 
-/* Transform the task input box into a dynamic wrapping text block */
 .task-textarea {
   flex: 1;
   background: transparent;
@@ -389,12 +388,12 @@ html, body, #root {
   outline: none;
   font-family: inherit;
   font-size: inherit;
-  resize: none; /* Disables the native resize grab-handle in the bottom right corner */
+  resize: none; 
   width: 100%;
   padding: 2px 0;
-  overflow: hidden; /* Hides horizontal and vertical scrollbars */
+  overflow: hidden; 
   word-wrap: break-word;
-  white-space: pre-wrap; /* Forces text to wrap onto the next line naturally */
+  white-space: pre-wrap; 
 }
 
 .task-checkbox {
@@ -412,7 +411,7 @@ html, body, #root {
 
 .task-row {
   display: flex;
-  align-items: center; /* Vertically aligns icons with your typed tasks line */
+  align-items: center;
   gap: 8px;
   width: 100%;
   margin-bottom: 6px;
@@ -428,7 +427,7 @@ html, body, #root {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: relative; /* Essential for locking the absolute date text container */
+  position: relative;
   transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
@@ -447,23 +446,13 @@ html, body, #root {
   font-size: 7.5px;
   font-weight: bold;
   font-family: 'Jua', sans-serif;
-  pointer-events: none; /* Prevents text from interfering with clicking the button */
+  pointer-events: none; 
   user-select: none;
   filter: saturate(0) brightness(0.4);
 }
 
 .calendar-date-text::before {
     content: attr(data-date);
-}
-
-/* MOBILE CATCHES: If a smartphone wraps the element inside a link anyway, force it back to gray */
-.calendar-date-text a,
-.calendar-date-text a:link,
-.calendar-date-text a:visited,
-.calendar-date-text * {
-  color: #4b5563 !important;
-  text-decoration: none !important;
-  font-size: 6px !important;
 }
 
 /* Brings the button to full brightness when hovered */
@@ -484,7 +473,6 @@ html, body, #root {
   color: #ef4444;
 }
 
-
 .modal-done {
   padding: 12px 48px;
   border-radius: 12px;
@@ -503,16 +491,6 @@ html, body, #root {
   background: rgba(188, 162, 141, 0.808);
 }
 
-/* ─────────────────────────────────────────
-   MODAL RIGHT (status)
-───────────────────────────────────────── */
-.modal-right {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Pending note following cursor */
 .pending-note {
   position: fixed;
   width: 160px;
@@ -525,13 +503,12 @@ html, body, #root {
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-/* Trash indicator */
 .note-trash-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 32px;
+  scale: 1.5;
   pointer-events: none;
   animation: trashPop 0.5s ease;
 }
@@ -541,12 +518,10 @@ html, body, #root {
   100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* Rounded only bottom-right corner */
 .sticky-note {
   border-radius: 0 0 18px 0;
 }
 
-/* Hide the visual resize box — just keep cursor */
 .resize-handle {
   position: absolute;
   bottom: 0;
@@ -557,7 +532,6 @@ html, body, #root {
   background: transparent;
 }
 
-/* Task checkbox button in modal */
 .task-checkbox-btn {
   width: 14px;
   height: 14px;
@@ -657,7 +631,6 @@ _____________________________________________ */
     top: 63%; 
     left: 50%;
     transform: translate(-50%, -50%);
-    text-decoration: none !important;
   }
 
   .modal-done {
@@ -672,23 +645,17 @@ _____________________________________________ */
   }
 
   /* DECORATIONS */
-  .shelf {
-    transform: translateX(-20%) scale(0.75);
+  .shelf {transform: translateX(-20%) scale(0.75);
   }
-  .pencil-holder {
-    transform: translateX(-50%) scale(0.75);
+  .pencil-holder {transform: translateX(-50%) scale(0.75);
   }
-  .plant {
-    transform: translateX(50%) scaleX(-1) scale(0.75);
+  .plant {transform: translateX(50%) scaleX(-1) scale(0.75);
   }
-  .cat {
-    transform: translateX(50%) scale(0.75);
+  .cat {transform: translateX(50%) scale(0.75);
   }
-  .toto {
-    transform: translateX(70%) translateY(12%)scale(0.60);
+  .toto {transform: translateX(70%) translateY(12%)scale(0.60);
   }
-  .note-stack {
-    transform: translateX(-50%) translateY(-10%)
+  .note-stack {transform: translateX(-50%) translateY(-10%)
   }
 }
 

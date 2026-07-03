@@ -1,4 +1,5 @@
 import { useState, useRef } from "react"
+import trashIcon from "../assets/solid-trash.svg"
 
 const COLORS = {
   yellow: { bg: "#FFEAAD", border: "#E0BD3F" },
@@ -161,34 +162,40 @@ function StickyNote({ note, onUpdate, onClick, boardRef, onDragOffBoard }) {
         top: `${note.y}%`,
         width: `${note.width || 15}%`,
         height: `${note.height || 15}%`,
-        backgroundColor: bg,
-        border: `4px solid ${border}`,
+        backgroundColor: offBoard ? "transparent" :bg,
+        border: offBoard ? "none" : `4px solid ${border}`,
+        boxShadow: offBoard ? "none" : undefined,
         touchAction: isDragging ? "none" : "auto",
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       onClick={handleClick}
     >
-      <div className="sticky-title">{note.title || "Untitled"}</div>
-
-      <div className="sticky-tasks">
-        {safeTasks.map((task, i) => (
-          <div key={i} className={`sticky-task-row ${task?.completed ? "completed" : ""}`}>
-            <button
-              className={`sticky-checkbox ${task?.completed ? "checked" : ""}`}
-              onClick={e => toggleTask(i, e)}
-            >
-              {task?.completed ? "✓" : ""}
-            </button>
-            <span className="sticky-task-text">{task?.text || ""}</span>
+      {!offBoard && (
+        <>
+          <div className="sticky-title">{note.title || "Untitled"}</div>
+          <div className="sticky-tasks">
+            {safeTasks.map((task, i) => (
+              <div key={i} className={`sticky-task-row ${task?.completed ? "completed" : ""}`}>
+                <button
+                  className={`sticky-checkbox ${task?.completed ? "checked" : ""}`}
+                  onClick={e => toggleTask(i, e)}
+                >
+                  {task?.completed ? "✓" : ""}
+                </button>
+                <span className="sticky-task-text">{task?.text || ""}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
 
       {/* Resize handle: desktop only, no touch handler attached */}
       <div className="resize-handle" onMouseDown={handleResizeDown} />
 
-      {offBoard && <div className="note-trash-overlay">🗑️</div>}
+      {offBoard && <div className="note-trash-overlay">
+        <img src={trashIcon} alt="Delete task" />
+        </div>}
     </div>
   )
 }

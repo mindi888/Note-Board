@@ -49,7 +49,7 @@ function NoteModal({ onClose, onCreate, initialNote }) {
     const cleanTasks = tasks.filter(t => t.text.trim().length > 0)
     const hasTitle = title.trim().length > 0
     const hasTasks = cleanTasks.length > 0
-    // Always close — only create/update if there's content
+
     if (hasTitle || hasTasks) {
       onCreate({ title: title.trim(), color, tasks: cleanTasks })
     }
@@ -58,16 +58,11 @@ function NoteModal({ onClose, onCreate, initialNote }) {
 
   function handleEnterKey(currentIndex, currentElement) {
   if (tasks[currentIndex].text.trim().length === 0) return;
-  // 1. Create a copy of your tasks list
   const updated = [...tasks];
 
-  // 2. Splice a brand new blank task directly below the current line index
   updated.splice(currentIndex + 1, 0, { text: "", completed: false });
-
-  // 3. Save the new array arrangement to React state
   setTasks(updated);
 
-  // 4. Wait 10 milliseconds for React to draw the new element, then snap cursor focus to it
   setTimeout(() => {
     const allTextareas = currentElement.closest('.modal-tasks')?.querySelectorAll('.task-textarea');
     if (allTextareas && allTextareas[currentIndex + 1]) {
@@ -80,20 +75,16 @@ function hasChangesBeenMade() {
   const originalTitle = initialNote?.title || "";
   if (title.trim() !== originalTitle.trim()) return true;
 
-  // 2. Parse and clean your original tasks array structure
   let originalTasks = initialNote?.tasks || [];
   if (typeof originalTasks === "string") {
     try { originalTasks = JSON.parse(originalTasks); } catch { originalTasks = []; }
   }
+  
   const cleanOriginal = originalTasks.filter(t => t.text.trim().length > 0);
-
-  // 3. Clean and isolate your live current user input tasks
   const cleanCurrent = tasks.filter(t => t.text.trim().length > 0);
 
-  // 4. If the number of tasks changed, edits definitely happened
   if (cleanCurrent.length !== cleanOriginal.length) return true;
 
-  // 5. Compare the exact text content and completion status of each row item
   for (let i = 0; i < cleanCurrent.length; i++) {
     if (cleanCurrent[i].text.trim() !== cleanOriginal[i].text.trim()) return true;
     if (cleanCurrent[i].completed !== cleanOriginal[i].completed) return true;
