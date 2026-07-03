@@ -639,8 +639,8 @@ html, body, #root {
   }
 
   .calendar-date-text {
-    font-size: 7px;
-    top: 65%; 
+    font-size: 6.5px;
+    top: 66%; 
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: bold;
@@ -659,4 +659,22 @@ html, body, #root {
     width: 12px;
     height: 12px;
   }
+
+  /* DECORATIONS */
+  .shelf {
+    transform: translateX(-20%) scale(0.75);
+  }
+  .pencil-holder {
+    transform: translateX(-50%) scale(0.75);
+  }
+  .plant {
+    transform: translateX(50%) scaleX(-1) scale(0.75);
+  }
+  .cat {
+    transform: translateX(50%) scale(0.75);
+  }
+  .toto {
+    transform: translateX(70%) translateY(12%)scale(0.60);
+  }
 }
+
