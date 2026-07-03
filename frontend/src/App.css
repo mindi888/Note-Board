@@ -452,6 +452,20 @@ html, body, #root {
   opacity: 0.9; 
 }
 
+.calendar-date-text::before {
+    content: attr(data-date);
+}
+
+/* MOBILE CATCHES: If a smartphone wraps the element inside a link anyway, force it back to gray */
+.calendar-date-text a,
+.calendar-date-text a:link,
+.calendar-date-text a:visited,
+.calendar-date-text * {
+  color: #4b5563 !important;
+  text-decoration: none !important;
+  font-size: 6px !important;
+}
+
 /* Brings the button to full brightness when hovered */
 .task-trash:hover,
 .modal-cal-btn:hover {
@@ -643,10 +657,7 @@ _____________________________________________ */
     top: 63%; 
     left: 50%;
     transform: translate(-50%, -50%);
-  }
-
-  .calendar-date-text::before {
-    content: attr(data-date);
+    text-decoration: none !important;
   }
 
   .modal-done {
