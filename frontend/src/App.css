@@ -449,7 +449,7 @@ html, body, #root {
   font-family: 'Jua', sans-serif;
   pointer-events: none; /* Prevents text from interfering with clicking the button */
   user-select: none;
-  opacity: 0.9; 
+  filter: saturate(0) brightness(0.4);
 }
 
 .calendar-date-text::before {
