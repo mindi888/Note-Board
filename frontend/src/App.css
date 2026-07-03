@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
-/* ─────────────────────────────────────────
-   RESET & BASE
-───────────────────────────────────────── */
 * {
   margin: 0;
   padding: 0;
@@ -256,7 +253,7 @@ html, body, #root {
 }
 
 /* ─────────────────────────────────────────
-   MODAL OVERLAY
+  NOTE MODAL OVERLAY
 ───────────────────────────────────────── */
 .modal-overlay {
   position: fixed;
@@ -280,6 +277,8 @@ html, body, #root {
   align-items: flex-start;
   gap: 48px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+  
+
 }
 
 /* ─────────────────────────────────────────
@@ -568,4 +567,96 @@ html, body, #root {
 .task-completed .task-input {
   text-decoration: line-through;
   opacity: 0.5;
+}
+
+/* SMALL WIDTH NOTE MODAL RESPONSIVENESS */
+@media (max-width: 700px) {
+  .modal-overlay {
+    padding: 16px;
+  }
+
+  .modal {
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    gap: 20px;
+    width: 100%;
+    max-width: 360px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 22px;
+  }
+
+  /* Label + swatches in horizontal row */
+  .modal-left {
+    order: -1;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .color-grid {
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    justify-items: center;
+    margin-top: 0;
+  }
+
+  .color-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Note preview + Done button */
+  .modal-center {
+    width: 100%;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .modal-note-preview {
+    width: min(85vw, 320px);
+    height: min(85vw, 320px);
+  }
+
+  .modal-label {
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  .modal-title-input {
+    font-size: 15px;
+  }
+
+  .task-textarea {
+    font-size: 13px;
+  }
+
+  .task-trash img,
+  .modal-cal-btn img {
+    width: 15px;
+    height: 15px;
+  }
+
+  .calendar-date-text {
+    font-size: 7px;
+    top: 65%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-family: 'Jua', sans-serif;
+    pointer-events: none; /* Prevents text from interfering with clicking the button */
+    user-select: none;
+  }
+
+  .modal-done {
+    padding: 10px 36px;
+    font-size: 14px;
+  }
+
+  .task-checkbox-btn,
+  .sticky-checkbox {
+    width: 12px;
+    height: 12px;
+  }
 }
