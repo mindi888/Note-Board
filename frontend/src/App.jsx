@@ -17,7 +17,8 @@ if (!trackingToken) {
 }
 
 function App() {
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+  const API_BASE_URL = "https://todo-list-3rx7.onrender.com"
+  //const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
   const boardRef = useRef(null)
 
   const [notes, setNotes] = useState([])
