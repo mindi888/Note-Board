@@ -452,7 +452,7 @@ html, body, #root {
 }
 
 .calendar-date-text::before {
-    content: attr(data-date);
+  content: attr(data-date);
 }
 
 /* Brings the button to full brightness when hovered */
@@ -471,6 +471,7 @@ html, body, #root {
 /* Automatically changes the nested date text to match the red hover lines */
 .modal-cal-btn:hover .calendar-date-text {
   color: #ef4444;
+  filter: invert(31%) sepia(87%) saturate(4645%) hue-rotate(341deg) brightness(97%) contrast(93%);
 }
 
 .modal-done {
