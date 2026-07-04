@@ -1,4 +1,4 @@
-# <img src="./public/favicon.png" width="32" alt=""> Mindi's Note Board 
+# <img src="./frontend/public/favicon.png" width="32" alt=""> Mindi's Note Board 
 
 A playful, desk-themed sticky note board built with React, inspired by my own workspace and the way I use sticky notes on my bulletin board as in-your-face reminders. So have fun! Create notes, drag them onto the board, check off tasks, add reminders to Google Calendar, resize notes, and drag them off the board when you're done.
 
