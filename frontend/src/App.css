@@ -657,5 +657,10 @@ _____________________________________________ */
   }
   .note-stack {transform: translateX(-50%) translateY(-10%)
   }
+  .note-stack:hover {
+    transform: translateX(-50%) 
+    translateY(-10%) 
+    scale(1.05);
+  }
 }
 
